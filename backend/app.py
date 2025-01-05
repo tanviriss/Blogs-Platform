@@ -9,6 +9,28 @@ def get_posts():
   result = [post.to_json() for post in posts]
   return jsonify({"posts": result})
 
+@app.route("/posts", methods=['POST'])
+def create_post():
+  data = request.json
+
+  title = data.get("title")
+  author = data.get("author")
+  description = data.get("description")
+  imgUrl = data.get("imgUrl")
+
+  if not author or not description or not title:
+    return (
+      jsonify({"Message": "You must include a title, author, and description"})
+    )
+  
+  new_post = Post(title=title, author=author, description=description, img_url=imgUrl)
+  try:
+    db.session.add(new_post)
+    db.session.commit()
+  except Exception as e:
+        return jsonify({"message": str(e)}), 400
+
+  return jsonify({"message": "post created successfully"}), 201
 
 
 
