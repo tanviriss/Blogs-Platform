@@ -32,8 +32,14 @@ def create_post():
 
   return jsonify({"message": "post created successfully"}), 201
 
-
-
+@app.route("/posts/<int:id>", methods=['DELETE'])
+def delete_post(id):
+  post = Post.query.get(id)
+  if not post:
+    return jsonify({"message": "post not found"}), 404
+  db.session.delete(post)
+  db.session.commit()
+  return jsonify({"message": "post deleted successfully"}), 200
 
 if __name__ == "__main__":
   with app.app_context():
