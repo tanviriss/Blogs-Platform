@@ -42,6 +42,27 @@ def delete_post(id):
   db.session.commit()
   return jsonify({"message": "post deleted successfully"}), 200
 
+@app.route("/posts/<int:id>", methods=['PATCH'])
+def update_post(id):
+  post = Post.query.get(id)
+
+  if not post:
+    return jsonify({"message": "post not found"}), 404
+
+  data = request.json
+  title = data.get("title")
+  author = data.get("author")
+  description = data.get("description")
+  imgUrl = data.get("imgUrl")
+
+  post.title = title if title else post.title
+  post.author = author if author else post.author
+  post.description = description if description else post.description
+  post.img_url = imgUrl if imgUrl else post.img_url
+
+  db.session.commit()
+  return jsonify({"message": "post updated successfully"}), 200
+
 
 if __name__ == "__main__":
   with app.app_context():
